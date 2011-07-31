@@ -1,0 +1,25 @@
+syntax: glob
+
+*Debug*
+*.xml
+*.exe
+*.svn
+*.obj
+*.ncb
+*.pdf
+*.doc
+*.ilk
+*.pdb
+*.exp
+*.pch
+*.idb
+*.map
+*.msi
+*.msp
+*.html
+*.htm
+*.user
+*~*
+*.htm
+*.dep
+*.aps
