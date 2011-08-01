@@ -10,6 +10,7 @@ namespace TiviT.NCloak
         private readonly char endCharacter;
 		
 		private readonly List<char> characterList;
+		private int counter=0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CharacterSet"/> class.
@@ -44,6 +45,7 @@ namespace TiviT.NCloak
         public void resetCounter()
         {
         	characterList.Clear();
+        	counter=0;
         }
 
         /// <summary>
@@ -52,7 +54,7 @@ namespace TiviT.NCloak
         /// <returns>A unique name based upon the character set settings</returns>
         public string Generate()
         {
-			//If we're empty then start off the list
+			/*//If we're empty then start off the list
 			if (characterList.Count == 0)
 			{
 				characterList.Add(startCharacter);
@@ -92,7 +94,9 @@ namespace TiviT.NCloak
 			{
 				sequence.Append(characterList[i]);
 			}
-			return sequence.ToString();
+			return sequence.ToString();*/
+			counter++;
+			return counter.ToString();
         }
     }
 }

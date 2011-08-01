@@ -9,7 +9,7 @@ namespace TiviT.NCloak.Mapping
         private readonly string typeName;
         private readonly string obfuscatedTypeName;
 
-        private readonly Dictionary<string, MemberMapping> methods;
+        private readonly Dictionary<MethodReference, MemberMapping> methods;
         private readonly Dictionary<string, MemberMapping> properties;
         private readonly Dictionary<string, MemberMapping> fields;
 
@@ -27,7 +27,7 @@ namespace TiviT.NCloak.Mapping
             this.typeName = typeName;
             this.obfuscatedTypeName = obfuscatedTypeName;
 
-            methods = new Dictionary<string, MemberMapping>();
+            methods = new Dictionary<MethodReference, MemberMapping>();
             properties = new Dictionary<string, MemberMapping>();
             fields = new Dictionary<string, MemberMapping>();
 
@@ -63,9 +63,12 @@ namespace TiviT.NCloak.Mapping
         {
             if (method == null) throw new ArgumentNullException("method");
             string methodName = method.Name;
-            if (!methods.ContainsKey(methodName))
+            if (!methods.ContainsKey(method))
             {
-                methods.Add(methodName, new MemberMapping(methodName, obfuscatedMethodName));
+                methods.Add(method, new MemberMapping(methodName, obfuscatedMethodName));
+                if (obfuscatedMethods.ContainsKey(obfuscatedMethodName)){
+                    	return;
+                    }
                 obfuscatedMethods.Add(obfuscatedMethodName, method);
             }
         }
@@ -112,8 +115,8 @@ namespace TiviT.NCloak.Mapping
         public bool HasMethodMapping(MethodReference method)
         {
             if (method == null) throw new ArgumentNullException("method");
-            string methodName = method.Name;
-            return methods.ContainsKey(methodName);
+            //string methodName = method.Name;
+            return methods.ContainsKey(method);
         }
 
         /// <summary>
@@ -154,8 +157,8 @@ namespace TiviT.NCloak.Mapping
             if (method == null) throw new ArgumentNullException("method");
             if (HasMethodMapping(method))
             {
-                string methodName = method.Name;
-                return methods[methodName].ObfuscatedMemberName;
+                //string methodName = method.Name;
+                return methods[method].ObfuscatedMemberName;
             }
             return null;
         }
