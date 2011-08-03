@@ -16,12 +16,10 @@ namespace TiviT.NCloak.Mapping
         private readonly Dictionary<string, MethodReference> obfuscatedMethods;
         private readonly Dictionary<string, PropertyReference> obfuscatedProperties;
         private readonly Dictionary<string, FieldReference> obfuscatedFields;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TypeMapping"/> class.
-        /// </summary>
-        /// <param name="typeName">Name of the type.</param>
-        /// <param name="obfuscatedTypeName">Name of the obfuscated type.</param>
+        
+        private NameManager nameManager;
+        
+		
         public TypeMapping(string typeName, string obfuscatedTypeName)
         {
             this.typeName = typeName;
@@ -34,12 +32,15 @@ namespace TiviT.NCloak.Mapping
             obfuscatedMethods = new Dictionary<string, MethodReference>();
             obfuscatedProperties = new Dictionary<string, PropertyReference>();
             obfuscatedFields = new Dictionary<string, FieldReference>();
+            
+            nameManager=new NameManager();
         }
 
-        /// <summary>
-        /// Gets the name of the obfuscated type.
-        /// </summary>
-        /// <value>The name of the obfuscated type.</value>
+        public NameManager NameManager {
+			get { return nameManager; }
+		}
+        
+        
         public string ObfuscatedTypeName
         {
             get { return obfuscatedTypeName; }
@@ -54,12 +55,16 @@ namespace TiviT.NCloak.Mapping
             get { return typeName; }
         }
 
-        /// <summary>
-        /// Adds a new method name mapping.
-        /// </summary>
-        /// <param name="method">The original method reference.</param>
-        /// <param name="obfuscatedMethodName">Name of the obfuscated method.</param>
-        public void AddMethodMapping(MethodReference method, string obfuscatedMethodName)
+       
+       
+        public string AddMethodMapping(MethodReference method)
+        {
+        	string obfuscatedMethodName=nameManager.GenerateName(NamingType.Method,method);
+        	AddMethodMapping(method,obfuscatedMethodName);
+        	return obfuscatedMethodName;
+        }
+        
+        public void AddMethodMapping(MethodReference method,string obfuscatedMethodName)
         {
             if (method == null) throw new ArgumentNullException("method");
             string methodName = method.Name;
@@ -73,12 +78,14 @@ namespace TiviT.NCloak.Mapping
             }
         }
 
-        /// <summary>
-        /// Adds a new property name mapping.
-        /// </summary>
-        /// <param name="property">The original property reference.</param>
-        /// <param name="obfuscatedPropertyName">Name of the obfuscated property.</param>
-        public void AddPropertyMapping(PropertyReference property, string obfuscatedPropertyName)
+        public string AddPropertyMapping(PropertyReference property)
+        {
+        	string obfuscatedPropertyName=nameManager.GenerateName(NamingType.Property,property);
+        	AddPropertyMapping(property,obfuscatedPropertyName);
+        	return obfuscatedPropertyName;
+        }
+        
+        public void AddPropertyMapping(PropertyReference property,string obfuscatedPropertyName)
         {
             if (property == null) throw new ArgumentNullException("property");
             string propertyName = property.Name;
@@ -94,8 +101,9 @@ namespace TiviT.NCloak.Mapping
         /// </summary>
         /// <param name="field">The original field reference.</param>
         /// <param name="obfuscatedFieldName">Name of the obfuscated field.</param>
-        public void AddFieldMapping(FieldReference field, string obfuscatedFieldName)
+        public void AddFieldMapping(FieldReference field)
         {
+        	string obfuscatedFieldName=nameManager.GenerateName(NamingType.Field,field);
             if (field == null) throw new ArgumentNullException("field");
             string fieldName = field.Name;
             if (!fields.ContainsKey(fieldName))

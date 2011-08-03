@@ -9,22 +9,23 @@ namespace TiviT.NCloak.Mapping
 		private readonly string assemblyName;
 		private readonly Dictionary<TypeReference, TypeMapping> typeMappingTable;
 		private readonly Dictionary<string, string> obfuscatedToOriginalMapping;
+		
+		private NameManager nameManager;
+		
+		
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AssemblyMapping"/> class.
-		/// </summary>
-		/// <param name="assemblyName">Name of the assembly.</param>
 		public AssemblyMapping(string assemblyName)
 		{
 			this.assemblyName = assemblyName;
 			typeMappingTable = new Dictionary<TypeReference, TypeMapping>();
 			obfuscatedToOriginalMapping = new Dictionary<string, string>();
+			nameManager=new NameManager();
 		}
 
-		/// <summary>
-		/// Gets the name of the assembly.
-		/// </summary>
-		/// <value>The name of the assembly.</value>
+		public NameManager NameManager {
+			get { return nameManager; }
+		}
+		
 		public string AssemblyName
 		{
 			get { return assemblyName; }
@@ -36,8 +37,9 @@ namespace TiviT.NCloak.Mapping
 		/// <param name="type">The type.</param>
 		/// <param name="obfuscatedTypeName">Name of the obfuscated type.</param>
 		/// <returns></returns>
-		public TypeMapping AddType(TypeReference type, string obfuscatedTypeName)
+		public TypeMapping AddType(TypeReference type)
 		{
+			string obfuscatedTypeName=nameManager.GenerateName(NamingType.Type,type);
 			string typeFullName = type.Name;
 			if (type.DeclaringType!=null){
 				typeFullName=type.DeclaringType.Name+"."+typeFullName;
