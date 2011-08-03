@@ -18,18 +18,6 @@ namespace TiviT.NCloak
             this.endCharacter = endCharacter;
 			characterList = new List<char>();
         }
-
-      
-        public char StartCharacter
-        {
-            get { return startCharacter; }
-        }
-
-      
-        public char EndCharacter
-        {
-            get { return endCharacter; }
-        }
         
         public void resetCounter()
         {
@@ -41,7 +29,12 @@ namespace TiviT.NCloak
         public string Generate()
         {
 			counter++;
-			return counter.ToString();
+			string zeroPrefix="";
+			if (counter<10){
+				zeroPrefix="0";	
+			}
+			string result=zeroPrefix+counter.ToString();
+			return result;
         }
     }
 }

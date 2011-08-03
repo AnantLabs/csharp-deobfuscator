@@ -63,6 +63,15 @@ namespace TiviT.NCloak
 			return GenerateName(type);
 		}
 		
+		public string GenerateName(NamingType type)
+		{
+			if (!namingTypes.ContainsKey(type)){
+				SetCharacterSet(type, DefaultCharacterSet);
+			}
+			return namingTypes[type].Generate();
+		}
+		
+		
 		private string resolveName(NamingType type,string name)
 		{
 			if (!ObfuscationDetector.isNameObfuscated(name)){
@@ -85,17 +94,6 @@ namespace TiviT.NCloak
 		}
 
 		
-		public string GenerateName(NamingType type)
-		{
-			//Check if such type exists
-			if (!namingTypes.ContainsKey(type))
-				SetCharacterSet(type, DefaultCharacterSet);
-
-			//Generate a new name
-			if (type == NamingType.Field) //For fields append an _ to make sure it differs from properties etc
-				return "_" + namingTypes[type].Generate();
-			return namingTypes[type].Generate();
-		}
 		
 		private static CharacterSet DefaultCharacterSet
 		{
