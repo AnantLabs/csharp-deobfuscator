@@ -84,31 +84,100 @@ namespace TiviT.NCloak
 		
 		public static string typeRenamer(TypeDefinition type)
 		{
+			if (type.DeclaringType!=null){
+				return "ChildClass_";
+			}
+			if (type.IsInterface){
+				return "Interface_";
+			}
+			if (type.IsEnum){
+				return "Enum_";
+			}
+			if (type.BaseType!=null){
+				if (type.BaseType.Name=="Form"){
+					return "Form_";
+				}
+			}
 			return "class_";
 		}
 		
 		public static string methodRenamer(MethodDefinition method)
 		{
-			if (!ObfuscationDetector.isNameObfuscated(method.Name)){
-				return method.Name;
+			if (method.Parameters.Count==2){
+				if (method.Parameters[0].ParameterType.Name=="Object"){
+					if (method.Parameters[1].ParameterType.Name=="EventArgs"){
+						return "eventHandler_";
+					}
+				}
 			}
+			if (method.Parameters.Count==1){
+				if (hasWinFormComponent(method.Parameters[0].ParameterType.Name)){
+				    	return "winformSetter_";
+				    }
+			}
+			if (hasWinFormComponent(method.ReturnType.Name)){
+			    	return "winformGetter_";
+			    }
+			
+			if (method.ReturnType.Name=="Boolean"){
+				return "boolMethod_";
+			}
+			
 			return "method_";
 		}
 		
 		public static string fieldRenamer(FieldDefinition field)
 		{
-			if (!ObfuscationDetector.isNameObfuscated(field.Name)){
-				return field.Name;
+			if (field.FieldType.Name=="Button"){
+				return "button_";
 			}
+			if (field.FieldType.Name=="TextBox"){
+				return "textbox_";
+			}
+			if (field.FieldType.Name=="ComboBox"){
+				return "combobox_";
+			}
+			if (field.FieldType.Name=="CheckBox"){
+				return "checkbox_";
+			}
+			if (field.FieldType.Name=="Label"){
+				return "label_";
+			}
+			
+			if (field.FieldType.Name=="Boolean"){
+				return "bool_";
+			}
+			if (field.FieldType.Name=="String"){
+				return "string_";
+			}
+		
 			return "field_";
 		}
 		
 		public static string propertyRenamer(PropertyDefinition prop)
 		{
-			if (!ObfuscationDetector.isNameObfuscated(prop.Name)){
-				return prop.Name;
-			}
+			
 			return "prop_";
+		}
+		
+		private static bool hasWinFormComponent(string name)
+		{
+			if (name=="TextBox"){
+				return true;
+			}else if (name=="Button"){
+				return true;
+			}else if (name=="ComboBox"){
+				return true;
+			}else if (name=="CheckBox"){
+				return true;
+			}else if (name=="Label"){
+				return true;
+			}else if (name=="PictureBox"){
+				return true;
+			}else if (name=="ListBox"){
+				return true;
+			}
+			return false;
 		}
 	}
 	
