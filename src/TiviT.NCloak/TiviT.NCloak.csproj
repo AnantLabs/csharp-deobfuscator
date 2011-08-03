@@ -72,7 +72,6 @@
     <Compile Include="CloakTasks\OutputAssembliesTask.cs" />
     <Compile Include="CloakTasks\StringEncryptionTask.cs" />
     <Compile Include="CloakTasks\SupressIldasmTask.cs" />
-    <Compile Include="CloakTasks\TamperProofTask.cs" />
     <Compile Include="ConfusionMethod.cs" />
     <Compile Include="FrameworkHelper.cs" />
     <Compile Include="ICloakContext.cs" />

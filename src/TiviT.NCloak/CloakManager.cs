@@ -74,8 +74,6 @@ namespace TiviT.NCloak
             //Always last - output the assembly in the relevant format
             if (String.IsNullOrEmpty(context.Settings.TamperProofAssemblyName))
                 RegisterTask<OutputAssembliesTask>(); //Default
-            else
-                RegisterTask<TamperProofTask>(); //Tamper proofing combines all assemblies into one
         }
 
 

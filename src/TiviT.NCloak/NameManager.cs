@@ -6,94 +6,70 @@ namespace TiviT.NCloak
 {
 	public class NameManager
 	{
-		private readonly Dictionary<NamingType, CharacterSet> namingTypes;
+		private readonly Dictionary<string, CharacterSet> namingTypes;
 		
 		
 		public NameManager()
 		{
-			namingTypes = new Dictionary<NamingType, CharacterSet>();
+			namingTypes = new Dictionary<string, CharacterSet>();
 		}
 
-		public void SetCharacterSet(NamingType type, CharacterSet characterSet)
+		public void SetCharacterSet(string prefix, CharacterSet characterSet)
 		{
-			if (namingTypes.ContainsKey(type))
-				namingTypes[type] = characterSet;
-			else
-				namingTypes.Add(type, characterSet);
-		}
-		
-		public void ResetNonTypeCounters()
-		{
-			ResetCounter(NamingType.Field);
-			ResetCounter(NamingType.Method);
-			ResetCounter(NamingType.Property);
-		}
-		
-		public void ResetCounter(NamingType type)
-		{
-			if (!namingTypes.ContainsKey(type)){
-				return;
-			}else{
-				namingTypes[type].resetCounter();
+			if (namingTypes.ContainsKey(prefix)){
+				namingTypes[prefix] = characterSet;
+			}
+			else{
+				namingTypes.Add(prefix, characterSet);
 			}
 		}
+		
 
 		public string GenerateName(NamingType type,Object assemblyObj)
 		{
+			string prefix="";
 			if (type==NamingType.Type)
 			{
 				TypeDefinition typeDef=(TypeDefinition)assemblyObj;
-				return resolveName(type,typeDef.Name);
+				if (!ObfuscationDetector.isNameObfuscated(typeDef.Name)){
+					return typeDef.Name;
+				}
+				prefix=SmartRenamer.typeRenamer(typeDef);
 			}
-			if (type==NamingType.Method)
+			else if (type==NamingType.Method)
 			{
 				MethodDefinition methodDef=(MethodDefinition)assemblyObj;
-				return resolveName(type,methodDef.Name);
+				if (!ObfuscationDetector.isNameObfuscated(methodDef.Name)){
+					return methodDef.Name;
+				}
+				prefix=SmartRenamer.methodRenamer(methodDef);
 			}
-			if (type==NamingType.Property)
+			else if (type==NamingType.Property)
 			{
 				PropertyDefinition propDef=(PropertyDefinition)assemblyObj;
-				return resolveName(type,propDef.Name);
+				if (!ObfuscationDetector.isNameObfuscated(propDef.Name)){
+					return propDef.Name;
+				}
+				prefix=SmartRenamer.propertyRenamer(propDef);
 			}
-			if (type==NamingType.Field)
+			else if (type==NamingType.Field)
 			{
 				FieldDefinition fieldDef=(FieldDefinition)assemblyObj;
-				return resolveName(type,fieldDef.Name);
+				if (!ObfuscationDetector.isNameObfuscated(fieldDef.Name)){
+					return fieldDef.Name;
+				}
+				prefix=SmartRenamer.fieldRenamer(fieldDef);
 			}
-			return GenerateName(type);
-		}
-		
-		public string GenerateName(NamingType type)
-		{
-			if (!namingTypes.ContainsKey(type)){
-				SetCharacterSet(type, DefaultCharacterSet);
+			if (prefix==""){
+				throw new Exception("Bad prefix");
 			}
-			return namingTypes[type].Generate();
-		}
-		
-		
-		private string resolveName(NamingType type,string name)
-		{
-			if (!ObfuscationDetector.isNameObfuscated(name)){
-				return name;
+			
+			if (!namingTypes.ContainsKey(prefix)){
+				SetCharacterSet(prefix, DefaultCharacterSet);
 			}
-			string prefix="unknown";
-			if (type==NamingType.Field){
-				prefix="field_";
-			}
-			else if (type==NamingType.Property){
-				prefix="property_";
-			}
-			else if (type==NamingType.Method){
-				prefix="method_";
-			}
-			else if (type==NamingType.Type){
-				prefix="class_";
-			}
-			return prefix+GenerateName(type);
+			return prefix + namingTypes[prefix].Generate();
 		}
 
-		
 		
 		private static CharacterSet DefaultCharacterSet
 		{
@@ -103,6 +79,38 @@ namespace TiviT.NCloak
 		
 	}
 	
+	public static class SmartRenamer
+	{
+		
+		public static string typeRenamer(TypeDefinition type)
+		{
+			return "class_";
+		}
+		
+		public static string methodRenamer(MethodDefinition method)
+		{
+			if (!ObfuscationDetector.isNameObfuscated(method.Name)){
+				return method.Name;
+			}
+			return "method_";
+		}
+		
+		public static string fieldRenamer(FieldDefinition field)
+		{
+			if (!ObfuscationDetector.isNameObfuscated(field.Name)){
+				return field.Name;
+			}
+			return "field_";
+		}
+		
+		public static string propertyRenamer(PropertyDefinition prop)
+		{
+			if (!ObfuscationDetector.isNameObfuscated(prop.Name)){
+				return prop.Name;
+			}
+			return "prop_";
+		}
+	}
 	
 	public static class ObfuscationDetector
 	{
