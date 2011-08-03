@@ -31,35 +31,41 @@ namespace TiviT.NCloak.Mapping
 			get { return assemblyName; }
 		}
 
-		/// <summary>
-		/// Adds the type mapping to the assembly.
-		/// </summary>
-		/// <param name="type">The type.</param>
-		/// <param name="obfuscatedTypeName">Name of the obfuscated type.</param>
-		/// <returns></returns>
-		public TypeMapping AddType(TypeReference type)
+		
+		private string createTypeFullName(TypeReference type,string typeName)
 		{
-			string obfuscatedTypeName=nameManager.GenerateName(NamingType.Type,type);
-			string typeFullName = type.Name;
+			string typeFullName = typeName;
 			if (type.DeclaringType!=null){
 				typeFullName=type.DeclaringType.Name+"."+typeFullName;
 			}
 			typeFullName = type.Namespace + "." + typeFullName;
+			return typeFullName;
+		}
+		
+		public TypeMapping AddType(TypeReference type)
+		{
+			string obfuscatedTypeName=nameManager.GenerateName(NamingType.Type,type);
+			string typeFullName = createTypeFullName(type,type.Name);
 			
 			TypeMapping typeMapping = new TypeMapping(typeFullName, obfuscatedTypeName);
 			typeMappingTable.Add(type, typeMapping);
 			//Add a reverse mapping
 			if (!String.IsNullOrEmpty(obfuscatedTypeName)){
-				string obfuscatedFullName=obfuscatedTypeName;
-				if (type.DeclaringType!=null){
-					obfuscatedFullName=type.DeclaringType.Name+"."+obfuscatedFullName;
-				}
-				obfuscatedFullName=type.Namespace + "." + obfuscatedFullName;
+				string obfuscatedFullName=createTypeFullName(type,obfuscatedTypeName);
 				obfuscatedToOriginalMapping.Add(obfuscatedFullName, typeFullName);
 			}
 			return typeMapping;
 		}
 
+		public void ChangeTypeMapping(TypeReference type,string newObfuscatedName)
+		{
+			string oldFullName=typeMappingTable[type].ObfuscatedTypeName;
+			obfuscatedToOriginalMapping.Remove(oldFullName);
+			string fullNewName=createTypeFullName(type,newObfuscatedName);
+			
+			obfuscatedToOriginalMapping.Add(fullNewName,typeMappingTable[type].TypeName);
+			typeMappingTable[type].ObfuscatedTypeName=newObfuscatedName;
+		}
 		
 		
 		public TypeMapping GetTypeMapping(TypeReference type)

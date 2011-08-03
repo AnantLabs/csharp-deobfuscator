@@ -65,7 +65,7 @@
     <Compile Include="CloakException.cs" />
     <Compile Include="CloakManager.cs" />
     <Compile Include="CloakTasks\ConfuseDecompilationTask.cs" />
-    <Compile Include="CloakTasks\OptimizeTask.cs" />
+    <Compile Include="CloakTasks\EntryPointHighLighterTask.cs" />
     <Compile Include="CloakTasks\ResourceRenamerTask.cs" />
     <Compile Include="CloakTasks\SimplifyTask.cs" />
     <Compile Include="CloakTasks\MappingTask.cs" />

@@ -56,6 +56,7 @@ namespace TiviT.NCloak
             {
                 RegisterTask<MappingTask>();
                 RegisterTask<ResourceRenamerTask>();
+                RegisterTask<EntryPointHighliterTask>();
                 RegisterTask<ObfuscationTask>();
             }
 

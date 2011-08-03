@@ -7,7 +7,7 @@ namespace TiviT.NCloak.Mapping
     public class TypeMapping
     {
         private readonly string typeName;
-        private readonly string obfuscatedTypeName;
+        private  string obfuscatedTypeName;
 
         private readonly Dictionary<MethodReference, MemberMapping> methods;
         private readonly Dictionary<string, MemberMapping> properties;
@@ -44,6 +44,7 @@ namespace TiviT.NCloak.Mapping
         public string ObfuscatedTypeName
         {
             get { return obfuscatedTypeName; }
+            set {obfuscatedTypeName=value;}
         }
 
         /// <summary>
@@ -76,6 +77,17 @@ namespace TiviT.NCloak.Mapping
                     }
                 obfuscatedMethods.Add(obfuscatedMethodName, method);
             }
+        }
+        
+        public void ChangeMethodMapping(MethodReference method,string newObfuscatedName)
+        {
+        	if (!methods.ContainsKey(method)){
+        		throw new Exception("Method not found!");
+        	}
+        	string oldName=methods[method].ObfuscatedMemberName;
+        	methods.Remove(method);
+        	obfuscatedMethods.Remove(oldName);
+        	AddMethodMapping(method,newObfuscatedName);
         }
 
         public string AddPropertyMapping(PropertyReference property)
