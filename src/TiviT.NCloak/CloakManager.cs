@@ -44,12 +44,6 @@ namespace TiviT.NCloak
         {
             if (context == null) throw new ArgumentNullException("context");
 
-            //Simplify the task
-            //RegisterTask<SimplifyTask>();
-
-            //Encrypt strings before anything else
-            //if (context.Settings.EncryptStrings) 
-            //    RegisterTask(new StringEncryptionTask(StringEncryptionMethod.Xor));
 
             //Build up a mapping of the assembly and obfuscate
             if (!context.Settings.NoRename)
@@ -58,21 +52,9 @@ namespace TiviT.NCloak
                 RegisterTask<ResourceRenamerTask>();
                 RegisterTask<EntryPointHighliterTask>();
                 RegisterTask<ObfuscationTask>();
+                RegisterTask<TracerTask>();
             }
 
-            //Supress ILDASM decompilation
-            //if (context.Settings.SupressIldasm)
-            //    RegisterTask<SupressIldasmTask>();
-
-            //Try to confuse reflection
-            //if (context.Settings.ConfuseDecompilationMethod != ConfusionMethod.None)
-            //    RegisterTask(new ConfuseDecompilationTask(ConfusionMethod.InvalidIl));
-
-            //Optimize the assembly (turn into short codes where poss)
-           // if (context.Settings.ConfuseDecompilationMethod == ConfusionMethod.None) //HACK: The new Mono.Cecil doesn't like bad IL codes
-           //     RegisterTask<OptimizeTask>();
-
-            //Always last - output the assembly in the relevant format
             if (String.IsNullOrEmpty(context.Settings.TamperProofAssemblyName))
                 RegisterTask<OutputAssembliesTask>(); //Default
         }
