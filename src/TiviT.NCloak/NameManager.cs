@@ -98,7 +98,10 @@ namespace TiviT.NCloak
 					return "Form_";
 				}
 			}
-			return "class_";
+			if (type.Methods.Count<4){
+				return "TinyClass_";
+			}
+			return "Class_";
 		}
 		
 		public static string methodRenamer(MethodDefinition method)
@@ -121,6 +124,11 @@ namespace TiviT.NCloak
 			
 			if (method.ReturnType.Name=="Boolean"){
 				return "boolMethod_";
+			}
+			if (method.ReturnType.Name=="String" && method.Parameters.Count==1){
+				if (method.Parameters[0].ParameterType.Name=="Int32"){
+					return "possibleDecryptor_";
+				}
 			}
 			
 			return "method_";

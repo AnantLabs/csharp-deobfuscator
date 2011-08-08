@@ -40,7 +40,6 @@ namespace TiviT.NCloak.CloakTasks
 				return;
 			}
 			MethodInfo writeLineMethod = typeof(Console).GetMethod("WriteLine", new Type[]{typeof(string)});
-			
 			foreach (ModuleDefinition moduleDefinition in definition.Modules){
 				foreach (TypeDefinition typeDefinition in moduleDefinition.GetAllTypes()){
 					foreach (MethodDefinition method in typeDefinition.Methods){
