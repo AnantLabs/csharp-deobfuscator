@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace TiviT.NCloak.CloakTasks
 {
-	public class TracerTask : ICloakTask
+	public class KeyTokenReplacingTask : ICloakTask
 	{
 		/// <summary>
 		/// Gets the task name.
@@ -15,7 +15,7 @@ namespace TiviT.NCloak.CloakTasks
 		/// <value>The name.</value>
 		public string Name
 		{
-			get { return "Adding tracing capabilities"; }
+			get { return "Replace public key token"; }
 		}
 
 		/// <summary>
@@ -25,14 +25,14 @@ namespace TiviT.NCloak.CloakTasks
 		{
 			foreach (AssemblyDefinition definition in context.GetAssemblyDefinitions().Values)
 			{
-				AddTracing(context, definition);
+				ReplaceKeyToken(context, definition);
 			}
 		}
 
 		/// <summary>
-		/// Just adds Console.WriteLine(ClassName.MethodName) to each method. Run 'test.exe > test.out' to get result
+		///
 		/// </summary>
-		private static void AddTracing(ICloakContext context, AssemblyDefinition definition)
+		private static void ReplaceKeyToken(ICloakContext context, AssemblyDefinition definition)
 		{
 			//Get the assembly mapping information (if any)
 			if (!context.MappingGraph.IsAssemblyMappingDefined(definition)){

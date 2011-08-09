@@ -9,7 +9,7 @@ namespace TiviT.NCloak
 {
     public class CloakContext : ICloakContext
     {
-        private readonly InitialisationSettings settings;
+        private readonly InitializationSettings settings;
         private readonly NameManager nameManager;
         private readonly MappingGraph mappingGraph;
         private readonly Dictionary<string, AssemblyDefinition> assemblyDefinitions;
@@ -19,7 +19,7 @@ namespace TiviT.NCloak
         /// Initializes a new instance of the <see cref="CloakContext"/> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
-        public CloakContext(InitialisationSettings settings)
+        public CloakContext(InitializationSettings settings)
         {
             //Check for null
             if (settings == null) throw new ArgumentNullException("settings");
@@ -45,7 +45,7 @@ namespace TiviT.NCloak
         /// Gets the settings.
         /// </summary>
         /// <value>The settings.</value>
-        public InitialisationSettings Settings
+        public InitializationSettings Settings
         {
             get { return settings; }
         }

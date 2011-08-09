@@ -9,7 +9,7 @@ namespace TiviT.NCloak
         /// Gets the settings.
         /// </summary>
         /// <value>The settings.</value>
-        InitialisationSettings Settings { get; }
+        InitializationSettings Settings { get; }
 
         /// <summary>
         /// Gets the name manager used to keep track of unique names for each type.

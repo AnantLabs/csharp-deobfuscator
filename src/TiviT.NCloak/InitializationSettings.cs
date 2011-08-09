@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace TiviT.NCloak
 {
-    public class InitialisationSettings
+    public class InitializationSettings
     {
         private readonly List<string> assembliesToObfuscate;
         private string tamperProofAssemblyName;
@@ -15,7 +15,7 @@ namespace TiviT.NCloak
         /// <summary>
         /// Initializes a new instance of the <see cref="InitialisationSettings"/> class.
         /// </summary>
-        public InitialisationSettings()
+        public InitializationSettings()
         {
             assembliesToObfuscate = new List<string>();
             validated = false;
@@ -72,14 +72,8 @@ namespace TiviT.NCloak
             get; set;
         }
 
-        /// <summary>
-        /// Gets or sets the method used to confuse decompilation tools.
-        /// </summary>
-        /// <value>The method used to confuse decompilation tools.</value>
-        public ConfusionMethod ConfuseDecompilationMethod
-        {
-            get; set;
-        }
+       
+       
 
         /// <summary>
         /// Gets or sets the name of the tamper proof assembly. Please note, this

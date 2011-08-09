@@ -7,21 +7,21 @@ namespace TiviT.NCloak.Console
 {
     public class CommandLineArgumentParser
     {
-        private readonly InitialisationSettings settings;
+        private readonly InitializationSettings settings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandLineArgumentParser"/> class.
         /// </summary>
         public CommandLineArgumentParser()
         {
-            settings = new InitialisationSettings();
+            settings = new InitializationSettings();
         }
 
         /// <summary>
         /// Gets the settings.
         /// </summary>
         /// <value>The settings.</value>
-        public InitialisationSettings Settings
+        public InitializationSettings Settings
         {
             get { return settings; }
         }
@@ -78,43 +78,6 @@ namespace TiviT.NCloak.Console
 
                         case "strings":
                             settings.EncryptStrings = true;
-                            break;
-
-                        case "suppressildasm":
-                            switch (argValue)
-                            {
-                                case "0":
-                                    settings.SupressIldasm = false;
-                                    break;
-                                case "1":
-                                    settings.SupressIldasm = true;
-                                    break;
-                                default:
-                                    DisplayError("Unrecognized suppress ildasm switch");
-                                    break;
-                            }
-                            
-                            break;
-
-                        case "confuse":
-                            settings.ConfuseDecompilationMethod = ConfusionMethod.InvalidIl;
-                            break;
-
-                        case "tamperproof":
-                            //Set the tamper proof name
-                            if (i + 1 < args.Length)
-                            {
-                                try
-                                {
-                                    settings.TamperProofAssemblyName = args[++i];
-                                }
-                                catch (FormatException)
-                                {
-                                    DisplayError("The tamperproof parameter must be a valid .NET name");
-                                }
-                            }
-                            else
-                                DisplayError("Unrecognised number of arguments for tamperproof parameter");
                             break;
 
                         case "bootstrappertype":
