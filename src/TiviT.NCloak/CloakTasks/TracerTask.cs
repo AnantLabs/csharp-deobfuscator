@@ -42,30 +42,19 @@ namespace TiviT.NCloak.CloakTasks
 			foreach (ModuleDefinition moduleDefinition in definition.Modules){
 				foreach (TypeDefinition typeDefinition in moduleDefinition.GetAllTypes()){
 					foreach (MethodDefinition method in typeDefinition.Methods){
-						
-						//Gets the CilWorker of the method for working with CIL instructions
 						if (method.Body==null){
 							continue;
 						}
 						ILProcessor worker = method.Body.GetILProcessor();
-						
 						string sentence=typeDefinition.Name+"."+method.Name;
 						
-						//Import the Console.WriteLine() method
-						MethodReference writeLine;
-						writeLine = definition.MainModule.Import(writeLineMethod);
+						MethodReference writeLine=definition.MainModule.Import(writeLineMethod);
 						
-						//Creates the MSIL instruction for inserting the sentence
-						Instruction insertSentence;
-						insertSentence = worker.Create(OpCodes.Ldstr, sentence);
+						Instruction insertSentence=worker.Create(OpCodes.Ldstr, sentence);
+						Instruction callWriteLine=worker.Create(OpCodes.Call, writeLine);
 						
-						Instruction callWriteLine;
-						callWriteLine = worker.Create(OpCodes.Call, writeLine);
-						
-						//Getting the first instruction of the current method
 						Instruction ins = method.Body.Instructions[0];
-		
-						method.Body.GetILProcessor().InsertBefore(ins, insertSentence);
+						worker.InsertBefore(ins, insertSentence);
 						worker.InsertAfter(insertSentence, callWriteLine);
 					}
 				}

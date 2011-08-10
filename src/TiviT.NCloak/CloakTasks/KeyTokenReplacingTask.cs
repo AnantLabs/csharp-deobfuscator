@@ -2,8 +2,7 @@
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
-using TiviT.NCloak.Mapping;
-using System.Reflection;
+//using System.Reflection;
 
 namespace TiviT.NCloak.CloakTasks
 {
@@ -34,45 +33,99 @@ namespace TiviT.NCloak.CloakTasks
 		/// </summary>
 		private static void ReplaceKeyToken(ICloakContext context, AssemblyDefinition definition)
 		{
-			//Get the assembly mapping information (if any)
-			if (!context.MappingGraph.IsAssemblyMappingDefined(definition)){
-				return;
-			}
-			MethodInfo writeLineMethod = typeof(Console).GetMethod("WriteLine", new Type[]{typeof(string)});
+			MethodDefinition keyTokenMethod= createTokenMethod(definition);
 			foreach (ModuleDefinition moduleDefinition in definition.Modules){
 				foreach (TypeDefinition typeDefinition in moduleDefinition.GetAllTypes()){
 					foreach (MethodDefinition method in typeDefinition.Methods){
-						
-						//Gets the CilWorker of the method for working with CIL instructions
 						if (method.Body==null){
 							continue;
 						}
-						ILProcessor worker = method.Body.GetILProcessor();
-						
-						string sentence=typeDefinition.Name+"."+method.Name;
-						
-						//Import the Console.WriteLine() method
-						MethodReference writeLine;
-						writeLine = definition.MainModule.Import(writeLineMethod);
-						
-						//Creates the MSIL instruction for inserting the sentence
-						Instruction insertSentence;
-						insertSentence = worker.Create(OpCodes.Ldstr, sentence);
-						
-						Instruction callWriteLine;
-						callWriteLine = worker.Create(OpCodes.Call, writeLine);
-						
-						//Getting the first instruction of the current method
-						Instruction ins = method.Body.Instructions[0];
-		
-						method.Body.GetILProcessor().InsertBefore(ins, insertSentence);
-						worker.InsertAfter(insertSentence, callWriteLine);
+						inMethodReplacer(method,keyTokenMethod);
 					}
 				}
 				
 			}
 			
 			
+		}
+		
+		private static void inMethodReplacer(MethodDefinition method,MethodDefinition keyTokenMethod)
+		{
+			for (int i=0;i<method.Body.Instructions.Count;i++)
+			{
+				Instruction instruction=method.Body.Instructions[i];
+				if (instruction.OpCode.Name!="callvirt"){
+					continue;
+				}
+				if (instruction.Operand is MethodReference)
+				{
+					MethodReference methodReference = (MethodReference)instruction.Operand;
+					if (methodReference.Name.IndexOf("GetPublicKeyToken")!=-1){
+						//if found such, we should delete this instruction, 2 instructions before
+						
+						method.Body.Instructions.Remove(instruction.Previous);
+						method.Body.Instructions.Remove(instruction.Previous);
+						i-=2;
+						
+						var il = method.Body.GetILProcessor();
+						il.InsertBefore(instruction, il.Create(OpCodes.Call, keyTokenMethod));
+						
+						
+						Instruction insertInst=instruction.Next;
+						System.Reflection.MethodInfo writeLineMethod = typeof(Console).GetMethod("WriteLine", new Type[]{typeof(string)});
+						MethodReference writeLine;
+						writeLine = method.Module.Import(writeLineMethod);
+						Instruction insertSentence = il.Create(OpCodes.Ldstr, "Fuck");
+						Instruction callWriteLine=il.Create(OpCodes.Call, writeLine);
+						il.InsertAfter(insertInst, insertSentence);
+						il.InsertAfter(insertSentence, callWriteLine);
+						
+						method.Body.Instructions.Remove(instruction);
+					}
+				}
+			}
+		}
+		
+		private static MethodDefinition createTokenMethod(AssemblyDefinition assembly)
+		{
+			byte[] token=assembly.Name.PublicKeyToken;
+			TypeDefinition storeType = new TypeDefinition("Deobfuscator","PublicKeyStore",
+			                                              TypeAttributes.Public | TypeAttributes.Class |
+			                                              TypeAttributes.AutoClass | TypeAttributes.AnsiClass |
+			                                              TypeAttributes.BeforeFieldInit,
+			                                              assembly.Import(typeof(object)));
+			
+			assembly.MainModule.Types.Add(storeType);
+			MethodDefinition method = new MethodDefinition("getPublicKeyToken",
+			                                               MethodAttributes.Public | MethodAttributes.Static,
+			                                               assembly.Import(typeof(byte[])));
+			storeType.Methods.Add(method);
+			
+			method.Body.InitLocals = true;
+			method.Body.MaxStackSize = 3;
+			method.AddLocal(assembly, typeof (byte[]));
+			
+			var il = method.Body.GetILProcessor();
+			il.Append(OpCodes.Nop);
+			sbyte arrayLength=(sbyte)token.Length;
+			
+			il.Append(il.Create(OpCodes.Ldc_I4_S, arrayLength));//size of array
+			il.Append(il.Create(OpCodes.Newarr,  assembly.Import(typeof(byte[]))));
+			il.Append(OpCodes.Stloc_0);
+			
+			for(sbyte i=0;i<token.Length;i++)
+			{
+				il.Append(OpCodes.Ldloc_0);//load array
+				il.Append(il.Create(OpCodes.Ldc_I4_S, i));//store index, where to place
+				il.Append(il.Create(OpCodes.Ldc_I4, (int)token[i]));//store actual value
+				il.Append(OpCodes.Stelem_I1);//set value to array
+			}
+			
+			il.Append(OpCodes.Ldloc_0);//return manipulations
+			//il.Append(OpCodes.Stloc_1);
+			//il.Append(OpCodes.Ldloc_1);
+			il.Append(OpCodes.Ret);
+			return method;
 		}
 	}
 }

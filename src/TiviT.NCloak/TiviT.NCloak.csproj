@@ -65,6 +65,7 @@
     <Compile Include="CloakException.cs" />
     <Compile Include="CloakManager.cs" />
     <Compile Include="CloakTasks\EntryPointHighLighterTask.cs" />
+    <Compile Include="CloakTasks\ILCleanerTask.cs" />
     <Compile Include="CloakTasks\KeyTokenReplacingTask.cs" />
     <Compile Include="CloakTasks\ResourceRenamerTask.cs" />
     <Compile Include="CloakTasks\MappingTask.cs" />
