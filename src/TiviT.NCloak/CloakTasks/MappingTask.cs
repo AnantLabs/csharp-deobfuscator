@@ -59,27 +59,30 @@ namespace TiviT.NCloak.CloakTasks
 						if (methodDefinition.IsConstructor){
 							continue;
 						}
+					
 						//Take into account whether this is overriden, or an interface implementation
 						if (methodDefinition.IsVirtual)
 						{
 							//We handle this differently - rather than creating a new name each time we need to reuse any already generated names
 							//We do this by firstly finding the root interface or object
 							TypeDefinition baseType = FindBaseTypeDeclaration(typeDefinition, methodDefinition);
-							if (baseType != null /*&& !baseType.IsInterface*/)
+							if (baseType != null )
 							{
 								//Find it in the mappings
 								TypeMapping baseTypeMapping = assemblyMapping.GetTypeMapping(baseType);
 								if (baseTypeMapping != null)
 								{
 									//We found the type mapping - look up the name it uses for this method and use that
-									if (baseTypeMapping.HasMethodMapping(methodDefinition))
-										typeMapping.AddMethodMapping(methodDefinition, baseTypeMapping.GetObfuscatedMethodName(methodDefinition));
+									if (baseTypeMapping.HasMethodMappingSig(methodDefinition)){
+										string obfuscatedName=baseTypeMapping.GetObfuscatedMethodNameSig(methodDefinition);
+										typeMapping.AddMethodMapping(methodDefinition,obfuscatedName);
+									}
 									else
 									{
 										//That's strange... we shouldn't get into here - but if we ever do then
 										//we'll add the type mapping into both
 										string obfuscatedName =typeMapping.AddMethodMapping(methodDefinition);
-										baseTypeMapping.AddMethodMapping(methodDefinition, obfuscatedName);
+										baseTypeMapping.AddMethodMappingSig(methodDefinition, obfuscatedName,baseType);
 									}
 								}
 								else
@@ -88,7 +91,7 @@ namespace TiviT.NCloak.CloakTasks
 									//at the base level first off
 									baseTypeMapping = assemblyMapping.AddType(baseType);
 									string obfuscatedName =typeMapping.AddMethodMapping(methodDefinition);
-									baseTypeMapping.AddMethodMapping(methodDefinition, obfuscatedName);
+									baseTypeMapping.AddMethodMappingSig(methodDefinition,obfuscatedName, baseType);
 								}
 							}
 							else{
@@ -122,14 +125,14 @@ namespace TiviT.NCloak.CloakTasks
 									if (baseTypeMapping != null)
 									{
 										//We found the type mapping - look up the name it uses for this property and use that
-										if (baseTypeMapping.HasPropertyMapping(propertyDefinition))
-											typeMapping.AddPropertyMapping(propertyDefinition, baseTypeMapping.GetObfuscatedPropertyName(propertyDefinition));
+										if (baseTypeMapping.HasPropertyMappingSig(propertyDefinition))
+											typeMapping.AddPropertyMapping(propertyDefinition, baseTypeMapping.GetObfuscatedPropertyNameSig(propertyDefinition));
 										else
 										{
 											//That's strange... we shouldn't get into here - but if we ever do then
 											//we'll add the type mapping into both
 											string obfuscatedName = typeMapping.AddPropertyMapping(propertyDefinition);
-											baseTypeMapping.AddPropertyMapping(propertyDefinition, obfuscatedName);
+											baseTypeMapping.AddPropertyMappingSig(propertyDefinition, obfuscatedName,baseType);
 										}
 									}
 									else
@@ -138,7 +141,7 @@ namespace TiviT.NCloak.CloakTasks
 										//at the base level first off
 										baseTypeMapping = assemblyMapping.AddType(baseType);
 										string obfuscatedName = typeMapping.AddPropertyMapping(propertyDefinition);
-										baseTypeMapping.AddPropertyMapping(propertyDefinition, obfuscatedName);
+										baseTypeMapping.AddPropertyMappingSig(propertyDefinition, obfuscatedName,baseType);
 									}
 								}
 								else{

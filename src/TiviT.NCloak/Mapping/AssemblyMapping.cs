@@ -77,35 +77,6 @@ namespace TiviT.NCloak.Mapping
 				return typeMappingTable[type];
 			}
 			return null;
-			//Check the reverse mapping table
-			/*if (obfuscatedToOriginalMapping.ContainsKey(typeName))
-			{
-				string originalTypeName = obfuscatedToOriginalMapping[typeName];
-				if (typeMappingTable.ContainsKey(originalTypeName))
-					return typeMappingTable[originalTypeName];
-			}*/
-			/*if (type.DeclaringType!=null)//if declaring type was renamed
-			{
-				string declaringTypeName=type.DeclaringType.Namespace+"."+type.DeclaringType.Name;
-				if (obfuscatedToOriginalMapping.ContainsKey(declaringTypeName))
-				{
-					string originalDeclaringTypeName = obfuscatedToOriginalMapping[declaringTypeName];
-					if (typeMappingTable.ContainsKey(originalDeclaringTypeName))
-					{
-						string obfuscatedTypeName= typeMappingTable[originalDeclaringTypeName].TypeName;
-						//we should cut namespace
-						if (obfuscatedTypeName.IndexOf(".")!=-1){
-							int place=obfuscatedTypeName.IndexOf(".");
-							obfuscatedTypeName=obfuscatedTypeName.Substring(place,obfuscatedTypeName.Length-place);
-						}
-						
-						string newTypeName=obfuscatedTypeName +"."+ type.Name;
-						if (typeMappingTable.ContainsKey(newTypeName))
-							return typeMappingTable[newTypeName];
-					}
-				}
-			}*/
-			
 		}
 	}
 }
