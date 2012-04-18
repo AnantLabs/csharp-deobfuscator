@@ -104,6 +104,7 @@ namespace TiviT.NCloak.CloakTasks
 			method.Body.InitLocals = true;
 			method.Body.MaxStackSize = 3;
 			method.AddLocal(assembly, typeof (byte[]));
+			method.AddLocal(assembly, typeof (byte[]));
 			
 			var il = method.Body.GetILProcessor();
 			il.Append(OpCodes.Nop);
@@ -122,8 +123,11 @@ namespace TiviT.NCloak.CloakTasks
 			}
 			
 			il.Append(OpCodes.Ldloc_0);//return manipulations
-			//il.Append(OpCodes.Stloc_1);
-			//il.Append(OpCodes.Ldloc_1);
+			il.Append(OpCodes.Stloc_1);
+			
+			Instruction lastLdLoc = il.Create(OpCodes.Ldloc_1);
+			il.Append(il.Create(OpCodes.Br_S, lastLdLoc));
+			il.Append(lastLdLoc);
 			il.Append(OpCodes.Ret);
 			return method;
 		}
