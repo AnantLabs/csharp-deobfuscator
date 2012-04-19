@@ -110,8 +110,9 @@ namespace TiviT.NCloak.CloakTasks
 			il.Append(OpCodes.Nop);
 			sbyte arrayLength=(sbyte)token.Length;
 			
-			il.Append(il.Create(OpCodes.Ldc_I4_S, arrayLength));//size of array
-			il.Append(il.Create(OpCodes.Newarr,  assembly.Import(typeof(byte[]))));
+			il.Append(OpCodes.Ldc_I4_8);
+			//il.Append(il.Create(OpCodes.Ldc_I4_S, arrayLength));//size of array
+			il.Append(il.Create(OpCodes.Newarr,  assembly.Import(typeof(System.Byte))));
 			il.Append(OpCodes.Stloc_0);
 			
 			for(sbyte i=0;i<token.Length;i++)
