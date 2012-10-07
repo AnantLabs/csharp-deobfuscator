@@ -116,7 +116,9 @@ namespace TiviT.NCloak.Mapping
 			if (!properties.ContainsKey(property))
 			{
 				properties.Add(property, new MemberMapping(property.Name, obfuscatedPropertyName));
-				obfuscatedProperties.Add(obfuscatedPropertyName, property);
+				//if (!obfuscatedProperties.ContainsKey(obfuscatedPropertyName)){
+					obfuscatedProperties.Add(obfuscatedPropertyName, property);
+				//}
 			}
 		}
 

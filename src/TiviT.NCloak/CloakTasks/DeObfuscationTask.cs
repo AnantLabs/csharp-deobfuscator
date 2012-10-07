@@ -6,7 +6,7 @@ using TiviT.NCloak.Mapping;
 
 namespace TiviT.NCloak.CloakTasks
 {
-	public class ObfuscationTask : ICloakTask
+	public class DeObfuscationTask : ICloakTask
 	{
 		/// <summary>
 		/// Gets the task name.

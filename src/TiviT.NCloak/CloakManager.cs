@@ -45,16 +45,16 @@ namespace TiviT.NCloak
 			if (context == null) throw new ArgumentNullException("context");
 
 			bool b = System.Environment.HasShutdownStarted;
-			//Build up a mapping of the assembly and obfuscate
+			//Build up a mapping of the assembly and deobfuscate
 			if (!context.Settings.NoRename)
 			{
 				RegisterTask<MappingTask>();
 				RegisterTask<ResourceRenamerTask>();
 				RegisterTask<EntryPointHighliterTask>();
-				RegisterTask<ObfuscationTask>();
+				RegisterTask<DeObfuscationTask>();
 				RegisterTask<ILCleanerTask>();//should be run before keytokenreplacer
 				RegisterTask<KeyTokenReplacingTask>();
-				RegisterTask<TracerTask>();
+				//RegisterTask<TracerTask>();
 				
 			}
 			RegisterTask<OutputAssembliesTask>(); //Default

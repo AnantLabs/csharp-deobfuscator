@@ -75,7 +75,7 @@ namespace TiviT.NCloak.CloakTasks
 						System.Reflection.MethodInfo writeLineMethod = typeof(Console).GetMethod("WriteLine", new Type[]{typeof(string)});
 						MethodReference writeLine;
 						writeLine = method.Module.Import(writeLineMethod);
-						Instruction insertSentence = il.Create(OpCodes.Ldstr, "Fuck");
+						Instruction insertSentence = il.Create(OpCodes.Ldstr, "Tracer Test");
 						Instruction callWriteLine=il.Create(OpCodes.Call, writeLine);
 						il.InsertAfter(insertInst, insertSentence);
 						il.InsertAfter(insertSentence, callWriteLine);

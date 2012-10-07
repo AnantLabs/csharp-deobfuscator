@@ -40,6 +40,7 @@ namespace TiviT.NCloak.CloakTasks
 						if (method.Body==null){
 							continue;
 						}
+						//method.CustomAttributes.Clear();
 						inMethodReplacer(method);
 					}
 				}

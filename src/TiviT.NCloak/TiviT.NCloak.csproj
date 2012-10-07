@@ -96,7 +96,7 @@
     <Compile Include="MemberNotFoundException.cs" />
     <Compile Include="NameManager.cs" />
     <Compile Include="NamingType.cs" />
-    <Compile Include="CloakTasks\ObfuscationTask.cs" />
+    <Compile Include="CloakTasks\DeObfuscationTask.cs" />
     <Compile Include="OutputHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemExtensionAttribute.cs" />
